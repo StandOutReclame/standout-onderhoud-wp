@@ -22,7 +22,7 @@ class StandoutOnderhoudRest {
         ];
 
         // add basic auth to requests
-        // add_filter( 'rest_request_before_callbacks', array($this,'authorizeApiRequests'), 10, 3 );
+        add_filter( 'rest_request_before_callbacks', array($this,'authorizeApiRequests'), 10, 3 );
 
     }
 
