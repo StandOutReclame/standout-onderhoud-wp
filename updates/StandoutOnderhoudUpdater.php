@@ -4,7 +4,7 @@
 Bump the version line in the main plugin
 Bump the version line in the updater class
 Create a .zip of the new plugin and add it to Github as a new release
-Update the self-host plugin manifest with the new version and link to the new zip on Github
+Update the self-host plugin manifest (https://server2.standoutwerkplaats.nl/standout-onderhoud/manifest.json) with the new version and link to the new zip on Github
 */
 
 class StandoutOnderhoudUpdater {
@@ -33,7 +33,7 @@ class StandoutOnderhoudUpdater {
 
         if( false === $remote || ! $this->cache_allowed ) {
 
-            $remote = wp_remote_get( 'https://raw.githubusercontent.com/StandOutReclame/standout-onderhoud-wp/master/manifest.json', [
+            $remote = wp_remote_get( 'https://server2.standoutwerkplaats.nl/standout-onderhoud/manifest.json', [
                     'timeout' => 10,
                     'headers' => [
                         'Accept' => 'application/json'
