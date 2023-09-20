@@ -46,6 +46,7 @@ class PluginsEndpoints {
 
         wp_send_json_success(
             [
+                'ts' => time(),
                 'plugins' => $plugins,
                 'needsUpdate' => $outOfDatePlugins
             ]
@@ -113,6 +114,7 @@ class PluginsEndpoints {
 
             wp_send_json_success(
                 [
+                    'ts' => time(),
                     'log' => $log,
                     'updated' => $updated
                 ]
@@ -124,6 +126,7 @@ class PluginsEndpoints {
             $this->disableWPDebugMode();
             wp_send_json_error(
                 [
+                    'ts' => time(),
                     'message' => $e->getMessage()
                 ]
             );

@@ -67,6 +67,7 @@ class CoreEndpoints {
 
         wp_send_json_success(
             [
+                'ts' => time(),
                 'needsUpdate' => $coreNeedsUpdate,
                 'core' => $coreUpdates
             ]
@@ -85,6 +86,7 @@ class CoreEndpoints {
 
         wp_send_json_success(
             [
+                'ts' => time(),
                 'log' => $this->log,
                 'updated' => $this->updated
             ]

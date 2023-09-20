@@ -38,6 +38,7 @@ class SiteCheckEndpoints {
             $result = $this->enableWPDebugMode();
             if(!$result) {
                 wp_send_json_error( [
+                    'ts' => time(),
                     'message' => $this->log
                 ] );
                 wp_die();
@@ -46,6 +47,7 @@ class SiteCheckEndpoints {
             $this->log[] = 'Debug mode enabled. Starting with visiting random URL\'s from the sitemap.xml';
             
             wp_send_json_success( [
+                'ts' => time(),
                 'message' => implode('<br/>', $this->log)
             ] );
             wp_die();
@@ -53,6 +55,7 @@ class SiteCheckEndpoints {
             // return response
         } catch(Exception $e) {
             wp_send_json_error( [
+                'ts' => time(),
                 'error' => $this->log
             ] );
             wp_die();
@@ -84,6 +87,7 @@ class SiteCheckEndpoints {
             $this->log[] = '<b>Done with checking site.</b><br/>';
 
             wp_send_json_success( [
+                'ts' => time(),
                 'log' => $this->log
             ] );
             wp_die();
@@ -94,6 +98,7 @@ class SiteCheckEndpoints {
             $this->disableWPDebugMode();
 
             wp_send_json_error( [
+                'ts' => time(),
                 'error' => $this->log
             ] );
             wp_die();
