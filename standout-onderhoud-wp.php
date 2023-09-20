@@ -11,7 +11,7 @@
  * Plugin Name:       StandOut Onderhoud
  * Plugin URI:        https://standout.nl
  * Description:       StandOut Onderhoud WP Plugin
- * Version:           1.0.1
+ * Version:           1.0.0
  * Author:            StandOut B.V.
  * Author URI:        https://standout.nl
  */
