@@ -118,11 +118,17 @@ class CoreEndpoints {
             add_filter( "auto_update_theme", '__return_false', 99999 );
             add_filter( "auto_update_plugin", '__return_false', 99999 );
 
-            $core_update = find_core_auto_update();
             $upgrader = new WP_Automatic_Updater;
+
+            if($upgrader->is_disabled()) {
+                $this->log[] = 'Can\'t update core. Updater is disabled. This is most likely because "define("AUTOMATIC_UPDATER_DISABLED", true);" has been set in wp-config';
+                return;
+            }
+
+            $core_update = find_core_auto_update();
             $result = $upgrader->update('core', $core_update);
 
-            $this->logs[] = 'Updated core to version '. $result;
+            $this->log[] = 'Updated core to version '. $result;
             $this->updated = $core_update;
 
             // Finally, process any new translations.
