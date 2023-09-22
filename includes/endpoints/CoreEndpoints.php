@@ -121,7 +121,17 @@ class CoreEndpoints {
             $upgrader = new WP_Automatic_Updater;
 
             if($upgrader->is_disabled()) {
-                $this->log[] = 'Can\'t update core. Updater is disabled. This is most likely because "define("AUTOMATIC_UPDATER_DISABLED", true);" has been set in wp-config';
+                
+                if ( ! wp_is_file_mod_allowed( 'automatic_updater' ) ) {
+                    $this->log[] = 'Can\'t update core. Updater is disabled. This is most likely because "define("DISALLOW_FILE_MODS", true);" has been set in wp-config. Remove this line';
+                    return;
+                }
+                if(wp_installing()) {
+                    $this->log[] = 'Can\'t update core. Updater is disabled. This is because wordpress is already in installing mode.';
+                    return;
+                }
+                
+                $this->log[] = 'Can\'t update core. Updater is disabled. This is most likely because "define("AUTOMATIC_UPDATER_DISABLED", true);" has been set in wp-config. Remove this line';
                 return;
             }
 

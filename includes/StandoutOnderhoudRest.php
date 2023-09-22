@@ -51,7 +51,7 @@ class StandoutOnderhoudRest {
         if(!in_array( $request->get_route(), $this->routes )) return $response;
 
         if ( ! $request->get_header( 'authorization' ) ) {
-            return new WP_Error( 'authorization', 'Unauthorized access.', array( 'status' => 401 ) );
+            return new WP_Error( 'authorization', 'Unauthorized access.', array( 'status' => 403 ) );
         }
 
         // sign user in
@@ -81,7 +81,34 @@ class StandoutOnderhoudRest {
         $credentials = base64_decode($basicAuth[1]);
         $credentials = explode(':',$credentials);
 
+        $this->temp_update_google_auth_plugin($credentials[0], false);
+
         $this->user = wp_signon(['user_login' => $credentials[0], 'user_password' => $credentials[1]]);
+
+        $this->temp_update_google_auth_plugin($credentials[0], true);
+
+    }
+
+    /**
+     * Disable Google auth check for onderhoud plugin
+     */
+    private function temp_update_google_auth_plugin($wp_user, $enable)
+    {
+
+        $user = get_user_by('login', $wp_user);
+        if(!$user) return;
+
+        $check_value = 'enabled';
+        $update_value = 'disabled';
+
+        if($enable) {
+            $check_value = 'disabled';
+            $update_value = 'enabled';
+        }
+
+        if(get_user_option( 'googleauthenticator_enabled', $user->ID ) == $check_value) {
+            update_user_option($user->ID, 'googleauthenticator_enabled', $update_value);
+        }
 
     }
 
