@@ -30,4 +30,4 @@ Then push / merge your changes into the master branch and manually create a new 
 
 The update should now be made available.
 
-![the office gif]: (https://media.tenor.com/Lh-0wgQBaL8AAAAC/it-crowd-roy-and-moss.gif)
+<img src="https://media.tenor.com/Lh-0wgQBaL8AAAAC/it-crowd-roy-and-moss.gif" width="100%" height="auto" alt="the it crowd gif" />
