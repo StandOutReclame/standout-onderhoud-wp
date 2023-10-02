@@ -1,0 +1,31 @@
+{
+  "name": "wp-onderhoud",
+  "version": "1.0.0",
+  "description": "Small package to connect any wordpress site to the Standout onderhoud application.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-wp": "wp-env start && wp-env run cli wp rewrite structure /%postname%/",
+    "stop-wp": "wp-env stop",
+    "reset-wp": "wp-env destroy && npm run start-wp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StandOutReclame/standout-onderhoud-wp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StandOutReclame/standout-onderhoud-wp/issues"
+  },
+  "homepage": "https://github.com/StandOutReclame/standout-onderhoud-wp#readme",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@wordpress/env": "^8.8.0"
+  }
+}

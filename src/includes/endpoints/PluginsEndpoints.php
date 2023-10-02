@@ -1,8 +1,17 @@
 <?php
- 
-class PluginsEndpoints {
 
-    use \includes\traits\DebugTrait;
+namespace Standout\WpOnderhoud\Includes\Endpoints;
+
+use Standout\WpOnderhoud\Includes\Traits\DebugTrait;
+use WP_REST_Request;
+use WP_Ajax_Upgrader_Skin;
+use Plugin_Upgrader;
+use Exception;
+
+class PluginsEndpoints
+{
+
+    use DebugTrait;
 
     public function __construct()
     {
@@ -14,16 +23,16 @@ class PluginsEndpoints {
      */
     public function register_routes()
     {
-        add_action( 'rest_api_init', function () {
-            register_rest_route( 'standout-onderhoud/v1', 'plugins', array(
+        add_action('rest_api_init', function () {
+            register_rest_route('standout-onderhoud/v1', 'plugins', array(
                 'methods' => 'GET',
                 'callback' => array($this, 'getPlugins'),
-            ) );
-            register_rest_route( 'standout-onderhoud/v1', 'plugins/update', array(
+            ));
+            register_rest_route('standout-onderhoud/v1', 'plugins/update', array(
                 'methods' => 'GET',
                 'callback' => array($this, 'updatePlugins'),
-            ) );
-        } );
+            ));
+        });
     }
 
     /**
@@ -32,7 +41,7 @@ class PluginsEndpoints {
     public function getPlugins(WP_REST_Request $request)
     {
 
-        if ( ! function_exists( 'get_plugins' ) ) {
+        if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
@@ -57,7 +66,8 @@ class PluginsEndpoints {
     /**
      * 
      */
-    public function updatePlugins(WP_REST_Request $request) {
+    public function updatePlugins(WP_REST_Request $request)
+    {
 
         $log = [];
 
@@ -66,12 +76,12 @@ class PluginsEndpoints {
         try {
 
             // For plugins_api/themes_api..
-            include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-            include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
-            include_once( ABSPATH . 'wp-admin/includes/theme-install.php' );
-            include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-            include_once( ABSPATH . 'wp-admin/includes/theme.php' );
-            include_once( ABSPATH . 'wp-admin/includes/file.php' );
+            include_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
+            include_once(ABSPATH . 'wp-admin/includes/plugin-install.php');
+            include_once(ABSPATH . 'wp-admin/includes/theme-install.php');
+            include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+            include_once(ABSPATH . 'wp-admin/includes/theme.php');
+            include_once(ABSPATH . 'wp-admin/includes/file.php');
 
             wp_update_plugins();  // Checks for available updates to plugins based on the latest versions hosted on WordPress.org.
 
@@ -80,23 +90,23 @@ class PluginsEndpoints {
             $updated = [];
 
             // update the plugins
-            foreach($outOfDatePluginNames as $outOfDatePlugin) {
-                
-                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/'.$outOfDatePlugin);
+            foreach ($outOfDatePluginNames as $outOfDatePlugin) {
+
+                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $outOfDatePlugin);
 
                 $skin = new WP_Ajax_Upgrader_Skin();
                 $result = false;
                 $success = false;
                 $activate = is_plugin_active($outOfDatePlugin);
 
-                $upgrader = new Plugin_Upgrader( $skin );
-                $result = $upgrader->upgrade( $outOfDatePlugin );
+                $upgrader = new Plugin_Upgrader($skin);
+                $result = $upgrader->upgrade($outOfDatePlugin);
 
-                if($activate) activate_plugin( $outOfDatePlugin, false, false, true );
+                if ($activate) activate_plugin($outOfDatePlugin, false, false, true);
 
                 $log[$outOfDatePlugin] = $skin->get_upgrade_messages();
-                
-                if($result) {
+
+                if ($result) {
                     $updated[] = [
                         'name' => $plugin_data['Name'],
                         'description' => $plugin_data['Description'],
@@ -104,10 +114,9 @@ class PluginsEndpoints {
                         'newversion' => $outOfDatePlugins->response[$outOfDatePlugin]->new_version
                     ];
                 }
-                
             }
 
-			// Force refresh of plugin update information.
+            // Force refresh of plugin update information.
             wp_clean_plugins_cache();
 
             $this->disableWPDebugMode();
@@ -120,9 +129,7 @@ class PluginsEndpoints {
                 ]
             );
             wp_die();
-
-
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->disableWPDebugMode();
             wp_send_json_error(
                 [
@@ -132,7 +139,5 @@ class PluginsEndpoints {
             );
             wp_die();
         }
-        
     }
-
 }

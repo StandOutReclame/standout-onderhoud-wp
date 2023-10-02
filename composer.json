@@ -1,0 +1,10 @@
+{
+    "name": "standout/wp-onderhoud",
+    "description": "Small package to connect any wordpress site to the Standout onderhoud application.",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "Standout\\WpOnderhoud\\": "src"
+        }
+    }
+}

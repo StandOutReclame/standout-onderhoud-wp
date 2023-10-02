@@ -1,20 +1,23 @@
 <?php
-namespace includes\traits;
 
-trait DebugTrait { 
+namespace Standout\WpOnderhoud\Includes\Traits;
+
+trait DebugTrait
+{
     /**
      * Enable the WP Debug mode
      */
-    private function enableWPDebugMode() {
+    private function enableWPDebugMode()
+    {
 
         $debug_mode = WP_DEBUG;
 
-        if(!defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
+        if (!defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
             $this->log[] = '<span style="color: red"><b>Error: WP_DEBUG_LOG is not defined in wp-config</b></span>';
             return false;
         }
 
-        if(!$debug_mode) {
+        if (!$debug_mode) {
             // enable debug mode;
             $filepath = ABSPATH . 'wp-config.php';
             $file = file_get_contents($filepath);
@@ -26,23 +29,22 @@ trait DebugTrait {
             );
 
             file_put_contents($filepath, $file);
-
         }
 
         $this->clearCacheKinsta();
 
         return true;
-
     }
-    
+
     /**
      * Disable the WP Debug mode
      */
-    private function disableWPDebugMode() {
+    private function disableWPDebugMode()
+    {
 
         $debug_mode = WP_DEBUG;
 
-        if($debug_mode) {
+        if ($debug_mode) {
             // disable debug mode;
             $filepath = ABSPATH . 'wp-config.php';
             $file = file_get_contents($filepath);
@@ -54,24 +56,23 @@ trait DebugTrait {
             );
 
             file_put_contents($filepath, $file);
-
         }
 
         $this->clearCacheKinsta();
 
         return true;
-
     }
 
     /**
      * Clear the site cache
      */
-    private function clearCacheKinsta() {
+    private function clearCacheKinsta()
+    {
         // clear the caches
         $ch = curl_init();
 
         // set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, get_site_url() .'kinsta-clear-cache-all/');
+        curl_setopt($ch, CURLOPT_URL, get_site_url() . 'kinsta-clear-cache-all/');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         // grab URL and pass it to the browser
