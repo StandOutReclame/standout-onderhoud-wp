@@ -21,7 +21,7 @@ class StandoutOnderhoudUpdater
     {
 
         $this->plugin_slug   = dirname(plugin_basename(__DIR__));
-        $this->version       = '1.0.3';
+        $this->version       = '1.0.4';
         $this->cache_key     = 'standoutonderhoud_updater';
         $this->cache_allowed = false;
 
