@@ -1,5 +1,7 @@
 <?php
 
+namespace Standout\WpOnderhoud\Updates;
+
 /*
 Bump the version line in the main plugin
 Bump the version line in the updater class
@@ -7,33 +9,37 @@ Create a .zip of the new plugin and add it to Github as a new release
 Update the self-host plugin manifest (https://server2.standoutwerkplaats.nl/standout-onderhoud/manifest.json) with the new version and link to the new zip on Github
 */
 
-class StandoutOnderhoudUpdater {
+class StandoutOnderhoudUpdater
+{
 
     public $plugin_slug;
     public $version;
     public $cache_key;
     public $cache_allowed;
 
-    public function __construct() {
+    public function __construct()
+    {
 
-        $this->plugin_slug   = dirname ( plugin_basename( __DIR__ ) );
-        $this->version       = '1.0.3';
+        $this->plugin_slug   = dirname(plugin_basename(__DIR__));
+        $this->version       = '1.0.4';
         $this->cache_key     = 'standoutonderhoud_updater';
         $this->cache_allowed = false;
 
-        add_filter( 'plugins_api', [ $this, 'info' ], 20, 3 );
-        add_filter( 'site_transient_update_plugins', [ $this, 'update' ] );
-        add_action( 'upgrader_process_complete', [ $this, 'purge' ], 10, 2 );
-
+        add_filter('plugins_api', [$this, 'info'], 20, 3);
+        add_filter('site_transient_update_plugins', [$this, 'update']);
+        add_action('upgrader_process_complete', [$this, 'purge'], 10, 2);
     }
 
-    public function request(){
+    public function request()
+    {
 
-        $remote = get_transient( $this->cache_key );
+        $remote = get_transient($this->cache_key);
 
-        if( false === $remote || ! $this->cache_allowed ) {
+        if (false === $remote || !$this->cache_allowed) {
 
-            $remote = wp_remote_get( 'https://server2.standoutwerkplaats.nl/standout-onderhoud/manifest.json', [
+            $remote = wp_remote_get(
+                'https://server2.standoutwerkplaats.nl/standout-onderhoud/manifest.json',
+                [
                     'timeout' => 10,
                     'headers' => [
                         'Accept' => 'application/json'
@@ -41,36 +47,35 @@ class StandoutOnderhoudUpdater {
                 ]
             );
 
-            if ( is_wp_error( $remote ) || 200 !== wp_remote_retrieve_response_code( $remote ) || empty( wp_remote_retrieve_body( $remote ) ) ) {
+            if (is_wp_error($remote) || 200 !== wp_remote_retrieve_response_code($remote) || empty(wp_remote_retrieve_body($remote))) {
                 return false;
             }
 
-            set_transient( $this->cache_key, $remote, DAY_IN_SECONDS );
-
+            set_transient($this->cache_key, $remote, DAY_IN_SECONDS);
         }
 
-        $remote = json_decode( wp_remote_retrieve_body( $remote ) );
+        $remote = json_decode(wp_remote_retrieve_body($remote));
 
         return $remote;
-
     }
 
-    function info( $response, $action, $args ) {
+    function info($response, $action, $args)
+    {
 
         // do nothing if you're not getting plugin information right now
-        if ( 'plugin_information' !== $action ) {
+        if ('plugin_information' !== $action) {
             return $response;
         }
 
         // do nothing if it is not our plugin
-        if ( empty( $args->slug ) || $this->plugin_slug !== $args->slug ) {
+        if (empty($args->slug) || $this->plugin_slug !== $args->slug) {
             return $response;
         }
 
         // get updates
         $remote = $this->request();
 
-        if ( ! $remote ) {
+        if (!$remote) {
             return $response;
         }
 
@@ -96,7 +101,7 @@ class StandoutOnderhoudUpdater {
             'changelog'    => $remote->sections->changelog
         ];
 
-        if ( ! empty( $remote->banners ) ) {
+        if (!empty($remote->banners)) {
             $response->banners = [
                 'low'  => $remote->banners->low,
                 'high' => $remote->banners->high
@@ -104,18 +109,18 @@ class StandoutOnderhoudUpdater {
         }
 
         return $response;
-
     }
 
-    public function update( $transient ) {
+    public function update($transient)
+    {
 
-        if ( empty($transient->checked ) ) {
+        if (empty($transient->checked)) {
             return $transient;
         }
 
         $remote = $this->request();
 
-        if ( $remote && version_compare( $this->version, $remote->version, '<' ) && version_compare( $remote->requires, get_bloginfo( 'version' ), '<=' ) && version_compare( $remote->requires_php, PHP_VERSION, '<' ) ) {
+        if ($remote && version_compare($this->version, $remote->version, '<') && version_compare($remote->requires, get_bloginfo('version'), '<=') && version_compare($remote->requires_php, PHP_VERSION, '<')) {
             $response              = new \stdClass();
             $response->slug        = $this->plugin_slug;
             $response->plugin      = "{$this->plugin_slug}/{$this->plugin_slug}.php";
@@ -123,21 +128,18 @@ class StandoutOnderhoudUpdater {
             $response->tested      = $remote->tested;
             $response->package     = $remote->download_url;
 
-            $transient->response[ $response->plugin ] = $response;
-
+            $transient->response[$response->plugin] = $response;
         }
 
         return $transient;
-
     }
 
-    public function purge( $upgrader, $options ) {
+    public function purge($upgrader, $options)
+    {
 
-        if ( $this->cache_allowed && 'update' === $options['action'] && 'plugin' === $options[ 'type' ] ) {
+        if ($this->cache_allowed && 'update' === $options['action'] && 'plugin' === $options['type']) {
             // just clean the cache when new plugin version is installed
-            delete_transient( $this->cache_key );
+            delete_transient($this->cache_key);
         }
-
     }
-
 }

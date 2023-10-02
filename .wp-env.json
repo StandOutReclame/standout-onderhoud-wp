@@ -1,0 +1,11 @@
+{
+    "core": "WordPress/WordPress#6.2.2",
+    "phpVersion": null,
+    "plugins": [ ".", "https://github.com/AdvancedCustomFields/acf/releases/download/6.2.0/advanced-custom-fields-6.2.0.zip" ],
+    "config": {
+        "WP_DEBUG": true,
+        "WP_DEBUG_LOG": true,
+        "WP_DEBUG_DISPLAY": true,
+        "WP_ENVIRONMENT_TYPE": "development"
+    }
+}
