@@ -17,7 +17,7 @@ use Standout\WpOnderhoud\Updates\StandoutOnderhoudUpdater;
  * Plugin Name:       StandOut Onderhoud
  * Plugin URI:        https://standout.nl
  * Description:       StandOut Onderhoud WP Plugin
- * Version:           1.0.4
+ * Version:           1.0.5
  * Author:            StandOut B.V.
  * Author URI:        https://standout.nl
  */
@@ -25,7 +25,7 @@ use Standout\WpOnderhoud\Updates\StandoutOnderhoudUpdater;
 /**
  * Composer setup.
  */
-require_once(plugin_dir_path(__FILE__) . '/vendor/autoload.php');
+require_once(plugin_dir_path(__FILE__) . 'vendor/autoload.php');
 
 /**
  * If this file is called directly, then abort execution.
